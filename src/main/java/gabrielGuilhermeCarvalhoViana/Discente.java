@@ -1,4 +1,4 @@
-package com.gabriel;
+package gabrielGuilhermeCarvalhoViana;
 
 public class Discente {
 	private String nome;
@@ -6,16 +6,18 @@ public class Discente {
 	private Integer matricula;
 	
 	public String getNome() {
-		return nome;
+		return this.nome;
 	}
+
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
+
 	public Integer getMatricula() {
-		return matricula;
+		return this.matricula;
 	}
+
 	public void setMatricula(Integer matricula) {
 		this.matricula = matricula;
 	}
-	
 }

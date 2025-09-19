@@ -1,4 +1,4 @@
-package com.gabriel;
+package gabrielGuilhermeCarvalhoViana;
 
 public class Disciplina {
 	private String nome;

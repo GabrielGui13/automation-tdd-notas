@@ -1,4 +1,4 @@
-package com.gabriel;
+package gabrielGuilhermeCarvalhoViana;
 
 import java.math.BigDecimal;
 
@@ -26,8 +26,21 @@ public class Matricula {
 		return nota1;
 	}
 
+	private void cadastrarNota(BigDecimal nota, int numeroNota) {
+		if (nota.compareTo(BigDecimal.ZERO) < 0 || nota.compareTo(new BigDecimal(10)) > 0) {
+			throw new IllegalArgumentException();
+		}
+
+		switch (numeroNota) {
+			case 1 -> this.nota1 = nota;
+			case 2 -> this.nota2 = nota;
+			case 3 -> this.nota3 = nota;
+			default -> throw new IllegalArgumentException("Número da nota inválido");
+		}
+	}
+
 	public void cadastrarNota1(BigDecimal nota1) {
-		this.nota1 = nota1;
+		this.cadastrarNota(nota1, 1);
 	}
 
 	public BigDecimal getNota2() {
@@ -35,7 +48,7 @@ public class Matricula {
 	}
 
 	public void cadastrarNota2(BigDecimal nota2) {
-		this.nota2 = nota2;
+		this.cadastrarNota(nota2, 2);
 	}
 
 	public BigDecimal getNota3() {
@@ -43,7 +56,7 @@ public class Matricula {
 	}
 
 	public void cadastrarNota3(BigDecimal nota3) {
-		this.nota3 = nota3;
+		this.cadastrarNota(nota3, 3);
 	}
 
 	public Integer getFrequencia() {
@@ -51,6 +64,10 @@ public class Matricula {
 	}
 
 	public void cadastrarFrequencia(Integer frequencia) {
+		if (frequencia < 0 || frequencia > 100) {
+			throw new IllegalArgumentException();
+		}
+
 		this.frequencia = frequencia;
 	}
 
@@ -63,7 +80,6 @@ public class Matricula {
 	}
 
 	public void consolidarParcialmente() {
-		// TODO Implementar aqui a lógica de consolidação parcial
 		this.setStatus(StatusAprovacao.APR);
 	}
 
