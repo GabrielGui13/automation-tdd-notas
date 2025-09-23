@@ -1,20 +1,15 @@
 package gabrielGuilhermeCarvalhoViana;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class Matricula {
 	private final Discente discente;
-	
 	private final Turma turma;
-	
 	private BigDecimal nota1;
-
 	private BigDecimal nota2;
-
 	private BigDecimal nota3;
-
 	private Integer frequencia;
-	
 	private StatusAprovacao status;
 
 	Matricula(Discente discente, Turma turma) {
@@ -28,14 +23,21 @@ public class Matricula {
 
 	private void cadastrarNota(BigDecimal nota, int numeroNota) {
 		if (nota.compareTo(BigDecimal.ZERO) < 0 || nota.compareTo(new BigDecimal(10)) > 0) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("A nota deve estar entre 0 e 10.");
 		}
 
 		switch (numeroNota) {
-			case 1 -> this.nota1 = nota;
-			case 2 -> this.nota2 = nota;
-			case 3 -> this.nota3 = nota;
-			default -> throw new IllegalArgumentException("Número da nota inválido");
+			case 1:
+				this.nota1 = nota;
+				break;
+			case 2:
+				this.nota2 = nota;
+				break;
+			case 3:
+				this.nota3 = nota;
+				break;
+			default:
+				throw new IllegalArgumentException("Número da nota inválido");
 		}
 	}
 
@@ -65,9 +67,8 @@ public class Matricula {
 
 	public void cadastrarFrequencia(Integer frequencia) {
 		if (frequencia < 0 || frequencia > 100) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Frequência inválida. Deve ser entre 0 e 100.");
 		}
-
 		this.frequencia = frequencia;
 	}
 
@@ -79,15 +80,45 @@ public class Matricula {
 		return turma;
 	}
 
-	public void consolidarParcialmente() {
-		this.setStatus(StatusAprovacao.APR);
-	}
-
 	public StatusAprovacao getStatus() {
 		return status;
 	}
 
 	private void setStatus(StatusAprovacao status) {
 		this.status = status;
+	}
+
+	public void consolidarParcialmente() {
+		if (nota1 == null || nota2 == null || nota3 == null || frequencia == null) {
+			throw new IllegalStateException("Notas ou frequência não cadastradas");
+		}
+
+		BigDecimal media = (this.nota1.add(this.nota2).add(this.nota3)).divide(new BigDecimal(3), 2, RoundingMode.HALF_UP);
+
+		boolean temFrequenciaSuficiente = this.frequencia >= 75;
+
+		if (!temFrequenciaSuficiente) {
+			if (media.compareTo(new BigDecimal("3.0")) < 0) {
+				this.setStatus(StatusAprovacao.REPMF);
+			} else {
+				this.setStatus(StatusAprovacao.REPF);
+			}
+			return;
+		}
+
+		if (media.compareTo(new BigDecimal("6.0")) >= 0) {
+			boolean algumaNotaInferiorA4 = nota1.compareTo(new BigDecimal("4.0")) < 0 ||
+					nota2.compareTo(new BigDecimal("4.0")) < 0 ||
+					nota3.compareTo(new BigDecimal("4.0")) < 0;
+			if (algumaNotaInferiorA4) {
+				this.setStatus(StatusAprovacao.REC);
+			} else {
+				this.setStatus(StatusAprovacao.APR);
+			}
+		} else if (media.compareTo(new BigDecimal("3.0")) >= 0) {
+			this.setStatus(StatusAprovacao.REC);
+		} else {
+			this.setStatus(StatusAprovacao.REP);
+		}
 	}
 }
